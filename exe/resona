@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require "resona"
+require "optparse"
+
+options = {}
+opt_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [options] gemfile"
+  opts.version = Resona::VERSION
+
+  opts.on("--with grp,...", Array, "Specify groups to include") do |with|
+    options[:with] = with
+  end
+  opts.on("--without grp,...", Array, "Specify groups to exclude") do |without|
+    options[:without] = without
+  end
+end
+opt_parser.parse!
+
+unless ARGV.length == 1
+  $stderr.puts "Error: Wrong number of arguments."
+  $stderr.puts opt_parser.banner
+  exit false
+end
+
+Resona.print_formula(ARGV[0], options)
