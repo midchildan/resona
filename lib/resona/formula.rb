@@ -5,43 +5,47 @@ module Resona
     class << self
       def print(gems)
         gems.each do |name, info|
-          puts resource_stanza(Resolver::REMOTE_URI, 
-                               name, info[:version], info[:checksum])
+          puts resource_stanza(name, info[:version], info[:checksum],
+                               info[:remote_uri])
         end
 
         puts
-        puts "def install"
-        gems.each_key { |name| puts install_command(name) }
-        puts "end"
+        puts install_method
       end
 
 
       private
 
-      def resource_stanza(remote_uri, name, version, checksum)
+      def resource_stanza(name, version, checksum, remote_uri)
         uri = URI.join(remote_uri, "/gems/#{name}-#{version}.gem")
 
-        stanza = <<-EOS
+        <<-EOL
 resource "#{name}" do
   url "#{uri}"
   sha256 "#{checksum}"
 end
-        EOS
-
-        stanza
+        EOL
       end
 
-      def install_command(name)
-        command =  <<-EOS
+      def install_method
+        <<-EOL
 def install
   resources.each do |r|
+    r.verify_download_integrity(r.fetch)
     system("gem", "install", r.cached_download, "--no-document",
       "--install-dir", "\#{libexec}/vendor")
   end
-end
-        EOS
 
-        command
+  mkpath bin
+  (bin/"__YOUR_FORMULA_SCRIPT__").write <<-EOS.undent
+  #!/bin/bash
+  export GEM_HOME="\#{libexec}/vendor"
+  exec ruby __TARGET__ "$@"
+  EOS
+
+  # TODO: Continue installation
+end
+        EOL
       end
     end
   end
