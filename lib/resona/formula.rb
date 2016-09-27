@@ -5,8 +5,8 @@ module Resona
     class << self
       def print(gems)
         gems.each do |name, info|
-          puts resource_stanza(name, info[:version], info[:checksum],
-                               info[:remote_uri])
+          puts resource_stanza(name, info[:version], info[:platform],
+                               info[:checksum], info[:remote_uri])
         end
 
         puts
@@ -16,8 +16,12 @@ module Resona
 
       private
 
-      def resource_stanza(name, version, checksum, remote_uri)
-        uri = URI.join(remote_uri, "/gems/#{name}-#{version}.gem")
+      def resource_stanza(name, version, platform, checksum, remote_uri)
+        uri = if platform.nil? || platform.empty?
+                URI.join(remote_uri, "/gems/#{name}-#{version}.gem")
+              else
+                URI.join(remote_uri, "/gems/#{name}-#{version}-#{platform}.gem")
+              end
 
         <<-EOL
 resource "#{name}" do
