@@ -13,6 +13,15 @@ module Resona
         puts install_method
       end
 
+      def generate_resource_stanzas(gems)
+        res = ""
+        gems.each do |name, info|
+          res << resource_stanza(name, info[:version], info[:platform],
+                                 info[:checksum], info[:remote_uri])
+        end
+        res
+      end
+
 
       private
 
