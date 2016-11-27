@@ -33,6 +33,12 @@ Usage: resona [options] gemfile
         --without grp,...            Specify groups to exclude
 ```
 
+Locally installed gems might not appear in the result. To prevent this from
+happening, it is recommended that you either use a [rbenv
+gemset](https://github.com/jf/rbenv-gemset), or use `GEM_HOME` and `GEM_PATH` to
+[hide your locally installed gems from
+resona](https://github.com/midchildan/mikutterbrew/blob/master/mikutterbrew).
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

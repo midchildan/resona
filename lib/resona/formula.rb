@@ -15,7 +15,7 @@ module Resona
                           info[:checksum], info[:remote_uri])
         end
 
-        stanzas.join("\n\n")
+        stanzas.join("\n")
       end
 
 
