@@ -4,22 +4,18 @@ module Resona
   module Formula
     class << self
       def print(gems)
-        gems.each do |name, info|
-          puts resource_stanza(name, info[:version], info[:platform],
-                               info[:checksum], info[:remote_uri])
-        end
-
+        puts generate_resource_stanzas(gems)
         puts
         puts install_method
       end
 
       def generate_resource_stanzas(gems)
-        res = ""
-        gems.each do |name, info|
-          res << resource_stanza(name, info[:version], info[:platform],
-                                 info[:checksum], info[:remote_uri])
+        stanzas = gems.sort.map do |name, info|
+          resource_stanza(name, info[:version], info[:platform],
+                          info[:checksum], info[:remote_uri])
         end
-        res
+
+        stanzas.join("\n\n")
       end
 
 
